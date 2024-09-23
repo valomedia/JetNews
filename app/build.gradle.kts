@@ -100,6 +100,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.firebase.crashlytics.buildtools)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -136,6 +137,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.window)
+    implementation(libs.volley)
+    implementation(libs.kotlinx.serialization.json)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)

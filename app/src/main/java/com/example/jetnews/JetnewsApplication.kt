@@ -17,8 +17,15 @@
 package com.example.jetnews
 
 import android.app.Application
+import android.util.Log
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
+import org.json.JSONObject
+
 
 class JetnewsApplication : Application() {
     companion object {
@@ -28,8 +35,43 @@ class JetnewsApplication : Application() {
     // AppContainer instance used by the rest of classes to obtain dependencies
     lateinit var container: AppContainer
 
+    private lateinit var requestQueue: RequestQueue
+
     override fun onCreate() {
         super.onCreate()
         container = AppContainerImpl(this)
+
+        //Initialize new Volley RequestQueue
+        requestQueue = Volley.newRequestQueue(this)
+
+        fetchJsonWithVolley("https://srv.valo-dev.de/public/jetnews/posts.json")
+
     }
+
+    private fun fetchJsonWithVolley(url: String) {
+
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            { response: JSONObject ->
+                // Retrieval of JSONObj, output into logcat
+                val jsonResponse = response
+                //Log.d("DebugMalik", "Response: $response")
+                Log.d("DebugMalik",jsonResponse.toString())
+            },
+            { error ->
+                // Output in case of Error
+                Log.e("ErrorMalik", "Error: ${error.message}")
+            }
+        )
+
+        requestQueue.add(jsonObjectRequest)
+
+    }
+
+    @Override
+    fun onStop() {
+        // Beende alle Anfragen, die dieser Aktivität zugeordnet sind
+        requestQueue.cancelAll(this)
+    }
+
 }
