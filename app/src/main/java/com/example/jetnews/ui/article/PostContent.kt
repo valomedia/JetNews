@@ -69,7 +69,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post3
+//import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
 import com.example.jetnews.model.Metadata
@@ -343,13 +343,13 @@ fun Markup.toAnnotatedStringItem(
 private val ColorScheme.codeBlockBackground: Color
     get() = onSurface.copy(alpha = .15f)
 
-@Preview("Post content")
-@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPost() {
-    JetnewsTheme {
-        Surface {
-            PostContent(post = post3)
-        }
-    }
-}
+//@Preview("Post content")
+//@Preview("Post content (dark)", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun PreviewPost() {
+//    JetnewsTheme {
+//        Surface {
+//            PostContent(post = post3)
+//        }
+//    }
+//}

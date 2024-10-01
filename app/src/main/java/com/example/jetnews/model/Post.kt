@@ -17,7 +17,11 @@
 package com.example.jetnews.model
 
 import androidx.annotation.DrawableRes
+import com.example.jetnews.R
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Post(
     val id: String,
     val title: String,
@@ -26,32 +30,39 @@ data class Post(
     val publication: Publication? = null,
     val metadata: Metadata,
     val paragraphs: List<Paragraph> = emptyList(),
-    @DrawableRes val imageId: Int,
-    @DrawableRes val imageThumbId: Int
+    val imageUrl: String,
+    val imageThumbUrl: String,
+    @DrawableRes val imageId: Int = R.drawable.post_6,
+    @DrawableRes val imageThumbId: Int = R.drawable.post_6_thumb
 )
 
+@Serializable
 data class Metadata(
     val author: PostAuthor,
     val date: String,
     val readTimeMinutes: Int
 )
 
+@Serializable
 data class PostAuthor(
     val name: String,
     val url: String? = null
 )
 
+@Serializable
 data class Publication(
     val name: String,
     val logoUrl: String
 )
 
+@Serializable
 data class Paragraph(
     val type: ParagraphType,
     val text: String,
     val markups: List<Markup> = emptyList()
 )
 
+@Serializable
 data class Markup(
     val type: MarkupType,
     val start: Int,
@@ -59,20 +70,35 @@ data class Markup(
     val href: String? = null
 )
 
+@Serializable
 enum class MarkupType {
+    @SerialName("link")
     Link,
+    @SerialName("code")
     Code,
+    @SerialName("italic")
     Italic,
+    @SerialName("bold")
     Bold,
 }
 
+@Serializable
+
 enum class ParagraphType {
+    @SerialName("title")
     Title,
+    @SerialName("caption")
     Caption,
+    @SerialName("header")
     Header,
+    @SerialName("subhead")
     Subhead,
+    @SerialName("text")
     Text,
+    @SerialName("code-block")
     CodeBlock,
+    @SerialName("quote")
     Quote,
+    @SerialName("bullet")
     Bullet,
 }

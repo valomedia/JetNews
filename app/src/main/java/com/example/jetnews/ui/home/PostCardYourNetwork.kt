@@ -40,11 +40,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post1
-import com.example.jetnews.data.posts.impl.post2
-import com.example.jetnews.data.posts.impl.post3
-import com.example.jetnews.data.posts.impl.post4
-import com.example.jetnews.data.posts.impl.post5
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.ui.theme.JetnewsTheme
@@ -102,48 +97,48 @@ fun PostCardPopular(
     }
 }
 
-@Preview("Regular colors")
-@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewPostCardPopular(
-    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
-) {
-    JetnewsTheme {
-        Surface {
-            PostCardPopular(post, {})
-        }
-    }
-}
-
-@Preview("Regular colors, long text")
-@Composable
-fun PreviewPostCardPopularLongText(
-    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
-) {
-    val loremIpsum =
-        """
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
-        sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
-        Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
-        nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
-        facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
-        consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
-        """.trimIndent()
-    JetnewsTheme {
-        Surface {
-            PostCardPopular(
-                post.copy(
-                    title = "Title$loremIpsum",
-                    metadata = post.metadata.copy(
-                        author = PostAuthor("Author: $loremIpsum"),
-                        readTimeMinutes = Int.MAX_VALUE
-                    )
-                ),
-                {}
-            )
-        }
-    }
-}
+//@Preview("Regular colors")
+//@Preview("Dark colors", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun PreviewPostCardPopular(
+//    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+//) {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardPopular(post, {})
+//        }
+//    }
+//}
+//
+//@Preview("Regular colors, long text")
+//@Composable
+//fun PreviewPostCardPopularLongText(
+//    @PreviewParameter(PostPreviewParameterProvider::class, limit = 1) post: Post
+//) {
+//    val loremIpsum =
+//        """
+//        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,
+//        sed suscipit nunc mollis in. Sed tincidunt orci lacus, vel ullamcorper nibh congue quis.
+//        Etiam imperdiet facilisis ligula id facilisis. Suspendisse potenti. Cras vehicula neque sed
+//        nulla auctor scelerisque. Vestibulum at congue risus, vel aliquet eros. In arcu mauris,
+//        facilisis eget magna quis, rhoncus volutpat mi. Phasellus vel sollicitudin quam, eu
+//        consectetur dolor. Proin lobortis venenatis sem, in vestibulum est. Duis ac nibh interdum,
+//        """.trimIndent()
+//    JetnewsTheme {
+//        Surface {
+//            PostCardPopular(
+//                post.copy(
+//                    title = "Title$loremIpsum",
+//                    metadata = post.metadata.copy(
+//                        author = PostAuthor("Author: $loremIpsum"),
+//                        readTimeMinutes = Int.MAX_VALUE
+//                    )
+//                ),
+//                {}
+//            )
+//        }
+//    }
+//}
 
 /**
  * Provides sample [Post] instances for Composable Previews.
@@ -163,8 +158,8 @@ fun PreviewPostCardPopularLongText(
  * would be more complex - e.g. retrieving the posts from a server - this would
  * be the right place to instantiate dummy instances.
  */
-class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
-    override val values = sequenceOf(
-        post1, post2, post3, post4, post5
-    )
-}
+//class PostPreviewParameterProvider : PreviewParameterProvider<Post> {
+//    override val values = sequenceOf(
+//        post1, post2, post3, post4, post5
+//    )
+//}

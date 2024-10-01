@@ -48,7 +48,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
-import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
@@ -220,23 +219,23 @@ fun BookmarkButtonBookmarkedPreview() {
     }
 }
 
-@Preview("Simple post card")
-@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun SimplePostPreview() {
-    JetnewsTheme {
-        Surface {
-            PostCardSimple(post3, {}, false, {})
-        }
-    }
-}
-
-@Preview("Post History card")
-@Composable
-fun HistoryPostPreview() {
-    JetnewsTheme {
-        Surface {
-            PostCardHistory(post3, {})
-        }
-    }
-}
+//@Preview("Simple post card")
+//@Preview("Simple post card (dark)", uiMode = UI_MODE_NIGHT_YES)
+//@Composable
+//fun SimplePostPreview() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardSimple(post3, {}, false, {})
+//        }
+//    }
+//}
+//
+//@Preview("Post History card")
+//@Composable
+//fun HistoryPostPreview() {
+//    JetnewsTheme {
+//        Surface {
+//            PostCardHistory(post3, {})
+//        }
+//    }
+//}
