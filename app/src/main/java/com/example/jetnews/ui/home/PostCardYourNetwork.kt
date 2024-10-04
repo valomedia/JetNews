@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.jetnews.R
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
@@ -58,15 +59,14 @@ fun PostCardPopular(
             .width(280.dp)
     ) {
         Column {
-            Image(
-                painter = painterResource(post.imageId),
-                contentDescription = null, // decorative
+            AsyncImage(
+                model = post.imageUrl,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .height(100.dp)
                     .fillMaxWidth()
             )
-
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = post.title,
@@ -109,7 +109,6 @@ fun PostCardPopular(
 //        }
 //    }
 //}
-//
 //@Preview("Regular colors, long text")
 //@Composable
 //fun PreviewPostCardPopularLongText(

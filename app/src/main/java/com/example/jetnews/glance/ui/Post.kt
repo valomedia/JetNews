@@ -18,7 +18,14 @@ package com.example.jetnews.glance.ui
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -43,6 +50,8 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.Text
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.example.jetnews.JetnewsApplication.Companion.JETNEWS_APP_URI
 import com.example.jetnews.R
 import com.example.jetnews.glance.ui.theme.JetnewsGlanceTextStyles
@@ -57,6 +66,15 @@ fun DpSize.toPostLayout(): PostLayout {
         (this.width <= 700.dp) -> PostLayout.HORIZONTAL_SMALL
         else -> PostLayout.HORIZONTAL_LARGE
     }
+}
+
+suspend fun getImageProvider(
+    imageUrl: String,
+    context: Context
+): Bitmap{
+    val request = ImageRequest.Builder(context).data(imageUrl).build()
+    val result = context.imageLoader.execute(request)
+    return (result.drawable as BitmapDrawable).bitmap
 }
 
 private fun Context.authorReadTimeString(author: String, readTimeMinutes: Int) =
@@ -122,17 +140,31 @@ fun HorizontalPost(
         modifier = modifier.clickable(onClick = openPostDetails(context, post))
     ) {
         if (showImageThumbnail) {
-            PostImage(
-                imageId = post.imageThumbId,
-                contentScale = ContentScale.Fit,
-                modifier = GlanceModifier.size(80.dp)
-            )
+          var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+            LaunchedEffect(post.imageThumbUrl) {
+                bitmap = getImageProvider(post.imageThumbUrl,context)
+            }
+            bitmap?.let {
+                PostImage(
+                    image = it,
+                    contentScale = ContentScale.Crop,
+                    modifier = GlanceModifier.size(80.dp)
+                )
+            }
         } else {
-            PostImage(
-                imageId = post.imageId,
-                contentScale = ContentScale.Crop,
-                modifier = GlanceModifier.width(250.dp)
-            )
+            var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+            LaunchedEffect(post.imageUrl) {
+                bitmap = getImageProvider(post.imageUrl,context)
+            }
+            bitmap?.let {
+                PostImage(
+                    image = it,
+                    contentScale = ContentScale.Crop,
+                    modifier = GlanceModifier.width(250.dp)
+                )
+            }
         }
         PostDescription(
             title = post.title,
@@ -162,7 +194,17 @@ fun VerticalPost(
         verticalAlignment = Alignment.Vertical.CenterVertically,
         modifier = modifier.clickable(onClick = openPostDetails(context, post))
     ) {
-        PostImage(imageId = post.imageId, modifier = GlanceModifier.fillMaxWidth())
+        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+        LaunchedEffect(post.imageUrl) {
+            bitmap = getImageProvider(post.imageUrl,context)
+        }
+
+        bitmap?.let {
+            PostImage(
+                image = it,
+                modifier = GlanceModifier.fillMaxWidth())
+        }
         Spacer(modifier = GlanceModifier.height(4.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             PostDescription(
@@ -201,12 +243,12 @@ fun BookmarkButton(id: String, isBookmarked: Boolean, onToggleBookmark: (String)
 
 @Composable
 fun PostImage(
-    imageId: Int,
+    image: Bitmap,
     contentScale: ContentScale = ContentScale.Crop,
     modifier: GlanceModifier = GlanceModifier
 ) {
     Image(
-        provider = ImageProvider(imageId),
+        provider = ImageProvider(image),
         contentScale = contentScale,
         contentDescription = null,
         modifier = modifier.cornerRadius(5.dp)
