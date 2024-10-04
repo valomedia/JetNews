@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.jetnews.R
+import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
@@ -90,15 +91,15 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
  *
  * Learn more about Preview features in the [documentation](https://d.android.com/jetpack/compose/tooling#preview)
  */
-//@Preview
-//@Composable
-//fun PostCardTopPreview() {
-//    JetnewsTheme {
-//        Surface {
-//            PostCardTop(posts.highlightedPost)
-//        }
-//    }
-//}
+@Preview
+@Composable
+fun PostCardTopPreview() {
+    JetnewsTheme {
+        Surface {
+            PostCardTop(posts.highlightedPost)
+        }
+    }
+}
 
 /*
  * These previews will only show up on Android Studio Dolphin and later.
@@ -106,12 +107,12 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
  *
  * Read more in the [documentation](https://d.android.com/jetpack/compose/tooling#preview-multipreview)
 */
-//@CompletePreviews
-//@Composable
-//fun PostCardTopPreviews() {
-//    JetnewsTheme {
-//        Surface {
-//            PostCardTop(posts.highlightedPost)
-//        }
-//    }
-//}
+@CompletePreviews
+@Composable
+fun PostCardTopPreviews() {
+    JetnewsTheme {
+        Surface {
+            PostCardTop(posts.highlightedPost)
+        }
+    }
+}
