@@ -17,18 +17,8 @@
 package com.example.jetnews
 
 import android.app.Application
-import android.util.Log
-import com.android.volley.Request
-import com.android.volley.RequestQueue
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
-//import com.example.jetnews.data.posts.impl.post1
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import org.json.JSONObject
-
 
 class JetnewsApplication : Application() {
     companion object {

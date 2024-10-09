@@ -16,14 +16,6 @@
 
 @file:Suppress("ktlint:max-line-length") // String constants read better
 package com.example.jetnews.data.posts.impl
-
-import android.util.Log
-import androidx.glance.LocalContext
-import com.android.volley.BuildConfig
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.example.jetnews.JetnewsApplication
 import com.example.jetnews.R
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -34,14 +26,6 @@ import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostAuthor
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.model.Publication
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import org.json.JSONObject
-import java.net.URL
-
-
-
-
 
 /**
  * Define hardcoded posts to avoid handling any non-ui operations.
@@ -337,7 +321,7 @@ val paragraphsPost2 = listOf(
     Paragraph(
         ParagraphType.CodeBlock,
         """
-        @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal
+        @Inject @MinimumBalance lateinit var minimumBalance: BigDecimal 
         // @MinimumBalance is ignored!
         """.trimIndent(),
         listOf(Markup(MarkupType.Bold, 65, 95))
@@ -430,8 +414,8 @@ val paragraphsPost2 = listOf(
         """
         class MyVMFactory @Inject constructor(
           private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>
-        ) {
-            ...
+        ) { 
+        ... 
         }
         """.trimIndent(),
         listOf(Markup(MarkupType.Bold, 72, 93))

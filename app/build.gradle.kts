@@ -101,7 +101,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.firebase.crashlytics.buildtools)
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)

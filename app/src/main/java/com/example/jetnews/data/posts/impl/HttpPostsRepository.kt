@@ -28,7 +28,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -105,10 +104,4 @@ class HttpPostsRepository : PostsRepository {
     // succeed
     private var requestCount = 0
 
-    /**
-     * Randomly fail some loads to simulate a real network.
-     *
-     * This will fail deterministically every 5 requests
-     */
-    private fun shouldRandomlyFail(): Boolean = ++requestCount % 5 == 0
 }
