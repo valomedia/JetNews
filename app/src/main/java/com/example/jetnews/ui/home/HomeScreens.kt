@@ -98,7 +98,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
-import com.example.jetnews.data.posts.impl.HttpPostsRepository
+import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.model.Post
 import com.example.jetnews.model.PostsFeed
 import com.example.jetnews.ui.article.postContentItems
@@ -723,7 +723,7 @@ private fun HomeTopAppBar(
 @Composable
 fun PreviewHomeListDrawerScreen() {
     val postsFeed = runBlocking {
-        (HttpPostsRepository().getPostsFeed() as Result.Success).data
+        (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
         HomeFeedScreen(
@@ -759,7 +759,7 @@ fun PreviewHomeListDrawerScreen() {
 @Composable
 fun PreviewHomeListNavRailScreen() {
     val postsFeed = runBlocking {
-        (HttpPostsRepository().getPostsFeed() as Result.Success).data
+        (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
         HomeFeedScreen(
@@ -791,7 +791,7 @@ fun PreviewHomeListNavRailScreen() {
 @Composable
 fun PreviewHomeListDetailScreen() {
     val postsFeed = runBlocking {
-        (HttpPostsRepository().getPostsFeed() as Result.Success).data
+        (BlockingFakePostsRepository().getPostsFeed() as Result.Success).data
     }
     JetnewsTheme {
         HomeFeedWithArticleDetailsScreen(

@@ -58,9 +58,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.jetnews.R
 import com.example.jetnews.data.Result
+import com.example.jetnews.data.posts.impl.BlockingFakePostsRepository
 import com.example.jetnews.data.posts.impl.HttpPostsRepository
 import com.example.jetnews.data.posts.impl.post3
-//import com.example.jetnews.data.posts.impl.post3
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.ui.utils.BookmarkButton
@@ -247,7 +247,7 @@ fun sharePost(post: Post, context: Context) {
 fun PreviewArticleDrawer() {
     JetnewsTheme {
         val post = runBlocking {
-            (HttpPostsRepository().getPost(post3.id) as Result.Success).data
+            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
         ArticleScreen(post, false, {}, false, {})
     }
@@ -264,7 +264,7 @@ fun PreviewArticleDrawer() {
 fun PreviewArticleNavRail() {
     JetnewsTheme {
         val post = runBlocking {
-            (HttpPostsRepository().getPost(post3.id) as Result.Success).data
+            (BlockingFakePostsRepository().getPost(post3.id) as Result.Success).data
         }
         ArticleScreen(post, true, {}, false, {})
     }
