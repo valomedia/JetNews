@@ -16,9 +16,12 @@
 
 package com.example.jetnews.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * A container of [Post]s, partitioned into different categories.
  */
+@Serializable
 data class PostsFeed(
     val highlightedPost: Post,
     val recommendedPosts: List<Post>,

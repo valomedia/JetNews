@@ -16,7 +16,6 @@
 
 @file:Suppress("ktlint:max-line-length") // String constants read better
 package com.example.jetnews.data.posts.impl
-
 import com.example.jetnews.R
 import com.example.jetnews.model.Markup
 import com.example.jetnews.model.MarkupType
@@ -416,7 +415,7 @@ val paragraphsPost2 = listOf(
         class MyVMFactory @Inject constructor(
           private val vmMap: Map<String, @JvmSuppressWildcards Provider<ViewModel>>
         ) { 
-            ... 
+        ... 
         }
         """.trimIndent(),
         listOf(Markup(MarkupType.Bold, 72, 93))
@@ -1097,7 +1096,9 @@ val post1 = Post(
     ),
     paragraphs = paragraphsPost1,
     imageId = R.drawable.post_1,
-    imageThumbId = R.drawable.post_1_thumb
+    imageThumbId = R.drawable.post_1_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val post2 = Post(
@@ -1113,7 +1114,9 @@ val post2 = Post(
     ),
     paragraphs = paragraphsPost2,
     imageId = R.drawable.post_2,
-    imageThumbId = R.drawable.post_2_thumb
+    imageThumbId = R.drawable.post_2_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val post3 = Post(
@@ -1129,7 +1132,9 @@ val post3 = Post(
     ),
     paragraphs = paragraphsPost3,
     imageId = R.drawable.post_3,
-    imageThumbId = R.drawable.post_3_thumb
+    imageThumbId = R.drawable.post_3_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val post4 = Post(
@@ -1145,7 +1150,9 @@ val post4 = Post(
     ),
     paragraphs = paragraphsPost4,
     imageId = R.drawable.post_4,
-    imageThumbId = R.drawable.post_4_thumb
+    imageThumbId = R.drawable.post_4_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val post5 = Post(
@@ -1161,7 +1168,9 @@ val post5 = Post(
     ),
     paragraphs = paragraphsPost5,
     imageId = R.drawable.post_5,
-    imageThumbId = R.drawable.post_5_thumb
+    imageThumbId = R.drawable.post_5_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val post6 = Post(
@@ -1177,7 +1186,9 @@ val post6 = Post(
     ),
     paragraphs = paragraphsPost6,
     imageId = R.drawable.post_6,
-    imageThumbId = R.drawable.post_6_thumb
+    imageThumbId = R.drawable.post_6_thumb,
+    imageUrl = "https://picsum.photos/600/300",
+    imageThumbUrl = "https://picsum.photos/600/300"
 )
 
 val posts: PostsFeed =
