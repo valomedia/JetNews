@@ -114,6 +114,7 @@ fun PreviewPostCardPopular(
         }
     }
 }
+
 @Preview("Regular colors, long text")
 @Composable
 fun PreviewPostCardPopularLongText(
