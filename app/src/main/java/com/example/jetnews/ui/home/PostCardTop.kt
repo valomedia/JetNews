@@ -30,15 +30,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.jetnews.R
 import com.example.jetnews.data.posts.impl.posts
 import com.example.jetnews.model.Post
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.utils.CompletePreviews
+
+//coil does not support loading async images in previews as of version 2.7.0, it apparently does so in version 3.0.0-alpha07
+
 
 @Composable
 fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
@@ -53,12 +58,22 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             .heightIn(min = 180.dp)
             .fillMaxWidth()
             .clip(shape = MaterialTheme.shapes.large)
-        Image(
-            painter = painterResource(post.imageId),
-            contentDescription = null, // decorative
-            modifier = imageModifier,
-            contentScale = ContentScale.Crop
-        )
+        if (LocalInspectionMode.current) {
+            Image(
+                painter = painterResource(post.imageId),
+                contentDescription = null, // decorative
+                modifier = imageModifier,
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            AsyncImage(
+                model = post.imageUrl,
+                contentDescription = null,
+                modifier = imageModifier,
+                contentScale = ContentScale.Crop
+
+            )
+        }
         Spacer(Modifier.height(16.dp))
 
         Text(

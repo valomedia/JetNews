@@ -20,7 +20,7 @@ import android.content.Context
 import com.example.jetnews.data.interests.InterestsRepository
 import com.example.jetnews.data.interests.impl.FakeInterestsRepository
 import com.example.jetnews.data.posts.PostsRepository
-import com.example.jetnews.data.posts.impl.FakePostsRepository
+import com.example.jetnews.data.posts.impl.HttpPostsRepository
 
 /**
  * Dependency Injection container at the application level.
@@ -38,7 +38,7 @@ interface AppContainer {
 class AppContainerImpl(private val applicationContext: Context) : AppContainer {
 
     override val postsRepository: PostsRepository by lazy {
-        FakePostsRepository()
+        HttpPostsRepository()
     }
 
     override val interestsRepository: InterestsRepository by lazy {
