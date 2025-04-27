@@ -1,8 +1,30 @@
-# Jetnews sample
+# Jetnews Sample
 
 Jetnews is a sample news reading app, built with
 [Jetpack Compose](https://developer.android.com/jetpack/compose). The goal of the sample is to
 showcase the current UI capabilities of Compose.
+
+## Build Instructions
+
+First, install `gradlew` by running:
+
+```shell
+gradle wrapper
+```
+
+With `gradlew` installed, you can build the project by running:
+
+```shell
+gradlew build
+```
+
+The gradle wrapper and the gradle version it uses will automatically be updated to the correct
+version during each build, if outdated. However, if the version of gradle used during the last build
+is too old to start the current build (for example because you haven't built the project for a
+while), you might get an error about your gradle version being too old. In this case, just re-run
+the first command to get the correct version.
+
+## Sample Contents
 
 <img src="screenshots/screenshots.png" alt="Screenshot">
 
@@ -10,7 +32,7 @@ This sample contains three screens: a list of articles, a detail page for articl
 subscribe to topics of interest. The navigation from the the list of articles to the interests
 screen uses a navigation drawer.
 
-## App scaffolding
+### App Scaffolding
 
 Package [`com.example.jetnews.ui`][1]
 
@@ -22,7 +44,7 @@ Package [`com.example.jetnews.ui`][1]
 [2]: app/src/main/java/com/example/jetnews/ui/JetnewsApp.kt
 [3]: app/src/main/java/com/example/jetnews/ui/JetnewsNavGraph.kt
 
-## Main article list
+### Main Article List
 
 Package [`com.example.jetnews.ui.home`][4]
 
@@ -38,7 +60,7 @@ See how to:
 
 [4]: app/src/main/java/com/example/jetnews/ui/home
 
-## Article detail
+### Article Detail
 
 Package [`com.example.jetnews.ui.article`][5]
 
@@ -48,7 +70,7 @@ This screen dives into the Text API, showing how to use different fonts than the
 [5]: app/src/main/java/com/example/jetnews/ui/article
 [6]: app/src/main/java/com/example/jetnews/ui/theme/Type.kt
 
-## Interests screen
+### Interests Screen
 
 Package [`com.example.jetnews.ui.interests`][7]
 
@@ -62,7 +84,7 @@ on and off, light and dark version in the Android Studio Preview.
 [7]: app/src/main/java/com/example/jetnews/ui/interests
 [8]: app/src/main/java/com/example/jetnews/ui/interests/SelectTopicButton.kt
 
-## AppWidget powered by Glance
+### AppWidget Powered by Glance
 
 Package [`com.example.jetnews.glance`][9]
 
@@ -79,11 +101,11 @@ and use dynamic colors when supported
 
 [9]: app/src/main/java/com/example/jetnews/glance
 
-## Data
+### Data
 
 The data in the sample is static, held in the `com.example.jetnews.data` package.
 
-## Instrumented and Robolectric tests
+### Instrumented and Robolectric Tests
 
 UI tests can be run on device/emulators or on JVM with Robolectric.
 
