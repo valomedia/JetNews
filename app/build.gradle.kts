@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -94,6 +96,8 @@ android {
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
     }
+
+    project.tasks.preBuild.dependsOn(":wrapper")
 }
 
 kotlin {

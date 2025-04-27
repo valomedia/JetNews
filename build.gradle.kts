@@ -24,3 +24,11 @@ plugins {
 }
 
 apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
+
+tasks.wrapper {
+    // Use the specified gradle version.
+    //
+    // This task is pulled in as a dependency by :app:preBuild, to ensure the wrapper is always
+    // up-to-date with the desired version of gradle.
+    gradleVersion = "8.8"
+}
