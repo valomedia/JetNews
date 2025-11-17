@@ -73,7 +73,6 @@ import kotlinx.coroutines.runBlocking
  * Stateless Article Screen that displays a single post adapting the UI to different screen sizes.
  *
  * @param post (state) item to display
- * @param showNavigationIcon (state) if the navigation icon should be shown
  * @param onBack (event) request navigate back
  * @param isFavorite (state) is this item currently a favorite
  * @param onToggleFavorite (event) request that this post toggle it's favorite state
