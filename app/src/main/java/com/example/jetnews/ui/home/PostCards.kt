@@ -236,7 +236,7 @@ fun SimplePostPreview() {
 fun HistoryPostPreview() {
     JetnewsTheme {
         Surface {
-            PostCardHistory(post3, {})
+            PostCardHistory(post3) {}
         }
     }
 }

@@ -112,7 +112,7 @@ fun HomeRoute(
 
     val homeScreenType = getHomeScreenType(isExpandedScreen, uiState)
     when (homeScreenType) {
-        HomeScreenType.FeedWithArticleDetails -> {
+        FeedWithArticleDetails -> {
             HomeFeedWithArticleDetailsScreen(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
@@ -129,7 +129,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
-        HomeScreenType.Feed -> {
+        Feed -> {
             HomeFeedScreen(
                 uiState = uiState,
                 showTopAppBar = !isExpandedScreen,
@@ -143,7 +143,7 @@ fun HomeRoute(
                 onSearchInputChanged = onSearchInputChanged,
             )
         }
-        HomeScreenType.ArticleDetails -> {
+        ArticleDetails -> {
             // Guaranteed by above condition for home screen type
             check(uiState is HomeUiState.HasPosts)
 
@@ -197,13 +197,13 @@ private fun getHomeScreenType(
         when (uiState) {
             is HomeUiState.HasPosts -> {
                 if (uiState.isArticleOpen) {
-                    HomeScreenType.ArticleDetails
+                    ArticleDetails
                 } else {
-                    HomeScreenType.Feed
+                    Feed
                 }
             }
-            is HomeUiState.NoPosts -> HomeScreenType.Feed
+            is HomeUiState.NoPosts -> Feed
         }
     }
-    true -> HomeScreenType.FeedWithArticleDetails
+    true -> FeedWithArticleDetails
 }
