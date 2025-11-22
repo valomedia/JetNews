@@ -177,11 +177,12 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
     // Robolectric dependencies
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.robolectric)
 }
 
 tasks.withType<Test>().configureEach {
-    systemProperties.put("robolectric.logging", "stdout")
+    systemProperties["robolectric.logging"] = "stdout"
 } 
