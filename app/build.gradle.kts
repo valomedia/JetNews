@@ -41,7 +41,7 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 36
     namespace = "com.example.jetnews"
 
     defaultConfig {
