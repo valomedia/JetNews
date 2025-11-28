@@ -23,7 +23,6 @@ kotlin-stdlib = "2.2.0"
 kotlinx_immutable = "1.10.2"
 kotlinxSerializationJson = "1.9.0"
 robolectric = "4.16"
-version-catalog-update = "0.8.4"
 volley = "1.2.1"
 
 [libraries]
@@ -78,4 +77,3 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 gradle-versions = { id = "com.github.ben-manes.versions", version.ref = "gradle-versions" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
