@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
@@ -19,12 +19,23 @@ jobs:
     name: Run JVM unit tests
     if: >-
       github.event_name == 'push' ||
-      github.event.pull_request.head.repo.full_name == github.repository
+      (github.event_name == 'pull_request_target' &&
+      github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
+        if: github.event_name == 'push'
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out pull request head
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -41,4 +52,4 @@ jobs:
         run: gradle wrapper --no-daemon
 
       - name: Run unit tests
-        run: ./gradlew testDebug --no-daemon --stacktrace
+        run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
