@@ -124,6 +124,7 @@ kotlin {
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
+    testImplementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation(libs.kotlin.stdlib)
@@ -177,6 +178,8 @@ dependencies {
 
     // Unit and Robolectric test dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.robolectric)
 }

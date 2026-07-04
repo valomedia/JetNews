@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   unit-tests:
-    name: Run JVM unit tests
+    name: Run JVM unit and Robolectric tests
     if: >-
       github.event_name == 'push' ||
       (github.event_name == 'pull_request' &&
@@ -51,5 +51,5 @@ jobs:
       - name: Generate Gradle wrapper
         run: gradle wrapper --no-daemon
 
-      - name: Run unit tests
+      - name: Run unit and Robolectric tests
         run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
