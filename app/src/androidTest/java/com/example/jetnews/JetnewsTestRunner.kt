@@ -20,6 +20,7 @@ package com.example.jetnews
 import android.app.Application
 import android.content.Context
 import androidx.test.runner.AndroidJUnitRunner
+import com.example.jetnews.data.AppContainer
 
 class JetnewsTestRunner : AndroidJUnitRunner() {
     override fun newApplication(
@@ -30,8 +31,5 @@ class JetnewsTestRunner : AndroidJUnitRunner() {
 }
 
 class TestJetnewsApplication : JetnewsApplication() {
-    override fun onCreate() {
-        super.onCreate()
-        container = TestAppContainer(this)
-    }
+    override fun createAppContainer(): AppContainer = TestAppContainer(this)
 }

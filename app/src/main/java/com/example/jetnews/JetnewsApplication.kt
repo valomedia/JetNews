@@ -31,6 +31,8 @@ open class JetnewsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = AppContainerImpl(this)
+        container = createAppContainer()
     }
+
+    protected open fun createAppContainer(): AppContainer = AppContainerImpl(this)
 }

@@ -46,3 +46,45 @@ jobs:
 
       - name: Run JVM unit and Robolectric tests
         run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
+
+  instrumented-tests:
+    name: Instrumented tests
+    # Fork PRs are skipped intentionally by repository policy.
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 9.2.1
+
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --no-daemon
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          script: ./gradlew connectedCheck --no-daemon --stacktrace
