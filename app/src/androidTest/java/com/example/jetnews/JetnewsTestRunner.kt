@@ -18,21 +18,18 @@
 package com.example.jetnews
 
 import android.app.Application
+import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
 import com.example.jetnews.data.AppContainer
-import com.example.jetnews.data.AppContainerImpl
 
-open class JetnewsApplication : Application() {
-    companion object {
-        const val JETNEWS_APP_URI = "https://developer.android.com/jetnews"
-    }
+class JetnewsTestRunner : AndroidJUnitRunner() {
+    override fun newApplication(
+        cl: ClassLoader,
+        className: String,
+        context: Context
+    ): Application = super.newApplication(cl, TestJetnewsApplication::class.java.name, context)
+}
 
-    // AppContainer instance used by the rest of classes to obtain dependencies
-    lateinit var container: AppContainer
-
-    override fun onCreate() {
-        super.onCreate()
-        container = createAppContainer()
-    }
-
-    protected open fun createAppContainer(): AppContainer = AppContainerImpl(this)
+class TestJetnewsApplication : JetnewsApplication() {
+    override fun createAppContainer(): AppContainer = TestAppContainer(this)
 }
