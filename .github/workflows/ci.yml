@@ -45,7 +45,21 @@ jobs:
         run: gradle wrapper --no-daemon
 
       - name: Run build validation
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+        run: ./gradlew :app:assembleDebug :app:bundleRelease --no-daemon --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: jetnews-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v7
+        with:
+          name: jetnews-release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
 
   unit-tests:
     name: JVM unit and Robolectric tests
