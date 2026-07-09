@@ -58,12 +58,21 @@ android {
         // Important: change the keystore for a production deployment
         val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
         val localKeystore = rootProject.file("debug_2.keystore")
-        val hasKeyInfo = userKeystore.exists()
-        create("release") {
-            storeFile = if (hasKeyInfo) userKeystore else localKeystore
-            storePassword = if (hasKeyInfo) "android" else System.getenv("compose_store_password")
-            keyAlias = if (hasKeyInfo) "androiddebugkey" else System.getenv("compose_key_alias")
-            keyPassword = if (hasKeyInfo) "android" else System.getenv("compose_key_password")
+        val localStorePassword = System.getenv("compose_store_password")
+        val localKeyAlias = System.getenv("compose_key_alias")
+        val localKeyPassword = System.getenv("compose_key_password")
+        val hasUserKeyInfo = userKeystore.exists()
+        val hasLocalKeyInfo = localKeystore.exists() &&
+                localStorePassword != null &&
+                localKeyAlias != null &&
+                localKeyPassword != null
+        if (hasUserKeyInfo || hasLocalKeyInfo) {
+            create("release") {
+                storeFile = if (hasUserKeyInfo) userKeystore else localKeystore
+                storePassword = if (hasUserKeyInfo) "android" else localStorePassword
+                keyAlias = if (hasUserKeyInfo) "androiddebugkey" else localKeyAlias
+                keyPassword = if (hasUserKeyInfo) "android" else localKeyPassword
+            }
         }
     }
 
@@ -74,7 +83,9 @@ android {
 
         getByName("release") {
             isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
+            signingConfigs.findByName("release")?.let {
+                signingConfig = it
+            }
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro")
         }
