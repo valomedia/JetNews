@@ -65,15 +65,13 @@ fun ComposeContentTestRule.saveScreenshot(name: String): File {
 private fun copyScreenshotToArtifactDirectory(screenshotFile: File) {
     val artifactFile = File(SCREENSHOT_ARTIFACT_DIRECTORY, screenshotFile.name)
 
-    runShellCommand("mkdir -p ${SCREENSHOT_ARTIFACT_DIRECTORY.shellQuote()}")
-    runShellCommand(
-        "cp ${screenshotFile.absolutePath.shellQuote()} ${artifactFile.absolutePath.shellQuote()}"
-    )
+    runShellCommand("mkdir -p $SCREENSHOT_ARTIFACT_DIRECTORY")
+    runShellCommand("cp ${screenshotFile.absolutePath} ${artifactFile.absolutePath}")
     verifyScreenshotCreated(artifactFile)
 }
 
 private fun verifyScreenshotCreated(screenshotFile: File) {
-    val output = runShellCommand("ls -l ${screenshotFile.absolutePath.shellQuote()}")
+    val output = runShellCommand("ls -l ${screenshotFile.absolutePath}")
     val screenshotLine = output.lineSequence()
         .firstOrNull { it.startsWith("-") && it.endsWith(screenshotFile.name) }
 
@@ -108,5 +106,3 @@ private fun externalFilesDirectory(): File = requireNotNull(
 ) {
     "External files directory is unavailable"
 }
-
-private fun String.shellQuote(): String = "'${replace("'", "'\\''")}'"
