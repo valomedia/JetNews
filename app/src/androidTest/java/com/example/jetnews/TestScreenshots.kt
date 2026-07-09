@@ -17,11 +17,14 @@
 
 package com.example.jetnews
 
+import android.graphics.Bitmap
 import android.os.ParcelFileDescriptor
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import java.io.File
+import java.io.FileOutputStream
 
+private const val SCREENSHOT_DIRECTORY_NAME = "test-screenshots"
 private const val SCREENSHOT_ARTIFACT_DIRECTORY = "/sdcard/Download/jetnews-test-screenshots"
 private val screenshotNamePattern = Regex("[A-Za-z0-9._-]+")
 
@@ -32,12 +35,41 @@ fun ComposeContentTestRule.saveScreenshot(name: String): File {
 
     waitForIdle()
 
-    val screenshotFile = File(SCREENSHOT_ARTIFACT_DIRECTORY, "$name.png")
-    runShellCommand("mkdir -p ${SCREENSHOT_ARTIFACT_DIRECTORY.shellQuote()}")
-    runShellCommand("screencap -p ${screenshotFile.absolutePath.shellQuote()}")
-    verifyScreenshotCreated(screenshotFile)
+    val screenshot = InstrumentationRegistry.getInstrumentation()
+        .uiAutomation
+        .takeScreenshot()
+    check(screenshot != null) {
+        "Device screenshot capture returned no image"
+    }
+
+    val screenshotDirectory = File(externalFilesDirectory(), SCREENSHOT_DIRECTORY_NAME)
+        .also { directory ->
+            check(directory.mkdirs() || directory.isDirectory) {
+                "Screenshot directory could not be created at ${directory.absolutePath}"
+            }
+        }
+    val screenshotFile = File(screenshotDirectory, "$name.png")
+
+    FileOutputStream(screenshotFile).use { stream ->
+        check(screenshot.compress(Bitmap.CompressFormat.PNG, 100, stream)) {
+            "Device screenshot could not be written to ${screenshotFile.absolutePath}"
+        }
+    }
+    screenshot.recycle()
+
+    copyScreenshotToArtifactDirectory(screenshotFile)
 
     return screenshotFile
+}
+
+private fun copyScreenshotToArtifactDirectory(screenshotFile: File) {
+    val artifactFile = File(SCREENSHOT_ARTIFACT_DIRECTORY, screenshotFile.name)
+
+    runShellCommand("mkdir -p ${SCREENSHOT_ARTIFACT_DIRECTORY.shellQuote()}")
+    runShellCommand(
+        "cp ${screenshotFile.absolutePath.shellQuote()} ${artifactFile.absolutePath.shellQuote()}"
+    )
+    verifyScreenshotCreated(artifactFile)
 }
 
 private fun verifyScreenshotCreated(screenshotFile: File) {
@@ -67,6 +99,14 @@ private fun runShellCommand(command: String): String {
     return ParcelFileDescriptor.AutoCloseInputStream(descriptor)
         .bufferedReader()
         .use { reader -> reader.readText() }
+}
+
+private fun externalFilesDirectory(): File = requireNotNull(
+    InstrumentationRegistry.getInstrumentation()
+        .targetContext
+        .getExternalFilesDir(null)
+) {
+    "External files directory is unavailable"
 }
 
 private fun String.shellQuote(): String = "'${replace("'", "'\\''")}'"
