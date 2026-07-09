@@ -18,6 +18,7 @@
 package com.example.jetnews
 
 import android.graphics.Bitmap
+import android.os.ParcelFileDescriptor
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
@@ -27,6 +28,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 private const val SCREENSHOT_DIRECTORY_NAME = "test-screenshots"
+private const val SCREENSHOT_ARTIFACT_DIRECTORY = "/sdcard/Download/jetnews-test-screenshots"
 
 fun ComposeContentTestRule.saveScreenshot(name: String): File {
     waitForIdle()
@@ -40,7 +42,31 @@ fun ComposeContentTestRule.saveScreenshot(name: String): File {
         screenshot.compress(Bitmap.CompressFormat.PNG, 100, stream)
     }
 
+    copyScreenshotToArtifactDirectory(screenshotFile)
+
     return screenshotFile
+}
+
+private fun copyScreenshotToArtifactDirectory(screenshotFile: File) {
+    val artifactPath = "$SCREENSHOT_ARTIFACT_DIRECTORY/${screenshotFile.name}"
+
+    runShellCommand("mkdir -p $SCREENSHOT_ARTIFACT_DIRECTORY")
+    runShellCommand("cp ${screenshotFile.absolutePath} $artifactPath")
+
+    val output = runShellCommand("ls -l $artifactPath")
+    check(output.lineSequence().any { it.startsWith("-") && it.endsWith(screenshotFile.name) }) {
+        "Screenshot was not copied to $artifactPath"
+    }
+}
+
+private fun runShellCommand(command: String): String {
+    val descriptor = InstrumentationRegistry.getInstrumentation()
+        .uiAutomation
+        .executeShellCommand(command)
+
+    return ParcelFileDescriptor.AutoCloseInputStream(descriptor)
+        .bufferedReader()
+        .use { reader -> reader.readText() }
 }
 
 private fun externalFilesDirectory(): File = requireNotNull(
