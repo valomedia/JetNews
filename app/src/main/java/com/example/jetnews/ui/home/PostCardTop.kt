@@ -70,9 +70,10 @@ fun PostCardTop(post: Post, modifier: Modifier = Modifier) {
             AsyncImage(
                 model = post.imageUrl,
                 contentDescription = null,
+                placeholder = painterResource(post.imageId),
+                error = painterResource(post.imageId),
                 modifier = imageModifier,
                 contentScale = ContentScale.Crop
-
             )
         }
         Spacer(Modifier.height(16.dp))
