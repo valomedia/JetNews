@@ -18,6 +18,7 @@
 package com.example.jetnews
 
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -37,6 +38,7 @@ class MainActivityInstrumentedTest {
     @Test
     fun mainActivity_launchesHomeFeed() {
         composeTestRule.onNodeWithText("Top stories for you").assertExists()
+        composeTestRule.saveScreenshot("main-activity-home-feed")
     }
 
     @Test
@@ -57,5 +59,17 @@ class MainActivityInstrumentedTest {
             composeTestRule.onNodeWithContentDescription("Home").assertExists()
             composeTestRule.onNodeWithContentDescription("Interests").assertExists()
         }
+
+        composeTestRule.saveScreenshot("main-activity-navigation-destinations")
+    }
+
+    @Test
+    fun mainActivity_opensArticle() {
+        composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0]
+            .performClick()
+
+        composeTestRule.onAllNodes(hasText("3 min read", substring = true))[0]
+            .assertExists()
+        composeTestRule.saveScreenshot("main-activity-article")
     }
 }
