@@ -17,11 +17,6 @@ permissions:
 jobs:
   build:
     name: Build validation
-    # Fork PRs are skipped intentionally by repository policy.
-    if: >-
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
 
     steps:
@@ -63,11 +58,6 @@ jobs:
 
   unit-tests:
     name: JVM unit and Robolectric tests
-    # Fork PRs are skipped intentionally by repository policy.
-    if: >-
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
 
     steps:
@@ -95,11 +85,6 @@ jobs:
 
   instrumented-tests:
     name: Instrumented tests
-    # Fork PRs are skipped intentionally by repository policy.
-    if: >-
-      github.event_name == 'push' ||
-      (github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
 
     steps:
