@@ -17,12 +17,14 @@
 
 package com.example.jetnews
 
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.waitUntilAtLeastOneExists
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.jetnews.ui.MainActivity
 import org.junit.Rule
@@ -65,11 +67,14 @@ class MainActivityInstrumentedTest {
 
     @Test
     fun mainActivity_opensArticle() {
-        composeTestRule.onAllNodes(hasText("Manuel Vivo", substring = true))[0]
-            .performClick()
+        composeTestRule.onNode(
+            hasText("Redesigning the Android Studio Logo") and hasClickAction()
+        ).performClick()
 
-        composeTestRule.onAllNodes(hasText("3 min read", substring = true))[0]
-            .assertExists()
+        composeTestRule.waitUntilAtLeastOneExists(
+            hasText("May 10 • 5 min read", substring = true),
+            timeoutMillis = 5_000
+        )
         composeTestRule.saveScreenshot("main-activity-article")
     }
 }
