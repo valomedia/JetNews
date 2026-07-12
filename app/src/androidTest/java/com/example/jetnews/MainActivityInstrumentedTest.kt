@@ -24,7 +24,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.waitUntilAtLeastOneExists
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.jetnews.ui.MainActivity
 import org.junit.Rule
@@ -71,10 +70,7 @@ class MainActivityInstrumentedTest {
             hasText("Redesigning the Android Studio Logo") and hasClickAction()
         ).performClick()
 
-        composeTestRule.waitUntilAtLeastOneExists(
-            hasText("May 10 • 5 min read", substring = true),
-            timeoutMillis = 5_000
-        )
+        composeTestRule.onNodeWithText("May 10 • 5 min read", substring = true).assertExists()
         composeTestRule.saveScreenshot("main-activity-article")
     }
 }
