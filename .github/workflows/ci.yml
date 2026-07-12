@@ -118,4 +118,19 @@ jobs:
         with:
           api-level: 35
           arch: x86_64
-          script: ./gradlew connectedCheck --no-daemon --stacktrace
+          script: >-
+            bash -c 'set +e;
+            adb shell rm -rf /sdcard/Download/jetnews-test-screenshots || true;
+            ./gradlew connectedCheck --no-daemon --stacktrace;
+            test_status=$?;
+            mkdir -p "$GITHUB_WORKSPACE/build/instrumented-test-screenshots";
+            adb pull "/sdcard/Download/jetnews-test-screenshots/." "$GITHUB_WORKSPACE/build/instrumented-test-screenshots" || true;
+            exit "$test_status"'
+
+      - name: Upload instrumented test screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: instrumented-test-screenshots
+          path: build/instrumented-test-screenshots
+          if-no-files-found: warn

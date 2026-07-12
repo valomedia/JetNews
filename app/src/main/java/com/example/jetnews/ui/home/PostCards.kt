@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -77,6 +78,8 @@ fun PostImage(post: Post, modifier: Modifier = Modifier) {
     AsyncImage(
         model = post.imageThumbUrl,
         contentDescription = null, // decorative
+        placeholder = painterResource(post.imageThumbId),
+        error = painterResource(post.imageThumbId),
         modifier = modifier
             .size(40.dp, 40.dp)
             .clip(MaterialTheme.shapes.small)

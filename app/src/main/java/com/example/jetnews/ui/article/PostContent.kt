@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -121,6 +122,8 @@ private fun PostHeaderImage(post: Post) {
     AsyncImage(
         model = post.imageUrl,
         contentDescription = null,
+        placeholder = painterResource(post.imageId),
+        error = painterResource(post.imageId),
         modifier = imageModifier,
         contentScale = ContentScale.Crop
     )
