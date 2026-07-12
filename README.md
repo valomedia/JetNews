@@ -15,7 +15,13 @@ gradle wrapper
 With `gradlew` installed, you can build the project by running:
 
 ```shell
-gradlew build
+./gradlew build
+```
+
+Run Android lint locally with:
+
+```shell
+./gradlew :app:lintDebug --no-daemon --stacktrace
 ```
 
 The gradle wrapper and the gradle version it uses will automatically be updated to the correct
