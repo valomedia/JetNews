@@ -7,28 +7,9 @@ permissions:
   contents: read
 
 jobs:
-  validate-release-ref:
-    name: Validate release ref
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Require default branch
-        shell: bash
-        env:
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: |
-          set -euo pipefail
-
-          if [ "${GITHUB_REF_NAME}" != "${DEFAULT_BRANCH}" ]; then
-            echo "::error::Signed release artifacts can only be built from the default branch (${DEFAULT_BRANCH})."
-            exit 1
-          fi
-
   android-release:
     name: Build signed release AAB
     runs-on: ubuntu-latest
-    needs: validate-release-ref
-    if: github.ref_name == github.event.repository.default_branch
 
     steps:
       - name: Check out repository
