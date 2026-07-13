@@ -1,0 +1,116 @@
+name: CD
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-release-ref:
+    name: Validate release ref
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Require default branch
+        shell: bash
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+
+          if [ "${GITHUB_REF_NAME}" != "${DEFAULT_BRANCH}" ]; then
+            echo "::error::Signed release artifacts can only be built from the default branch (${DEFAULT_BRANCH})."
+            exit 1
+          fi
+
+  android-release:
+    name: Build signed release AAB
+    runs-on: ubuntu-latest
+    needs: validate-release-ref
+    if: github.ref_name == github.event.repository.default_branch
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 9.2.1
+
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --no-daemon
+
+      - name: Decode signing keystore
+        shell: bash
+        env:
+          ANDROID_SIGNING_KEYSTORE_BASE64: ${{ secrets.ANDROID_SIGNING_KEYSTORE_BASE64 }}
+          ANDROID_SIGNING_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS || vars.ANDROID_SIGNING_KEY_ALIAS }}
+          ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          for variable_name in \
+            ANDROID_SIGNING_KEYSTORE_BASE64 \
+            ANDROID_SIGNING_KEYSTORE_PASSWORD \
+            ANDROID_SIGNING_KEY_ALIAS \
+            ANDROID_SIGNING_KEY_PASSWORD; do
+            if [ -z "${!variable_name}" ]; then
+              echo "::error::${variable_name} is not configured."
+              exit 1
+            fi
+          done
+
+          keystore_path="${RUNNER_TEMP}/android-signing/release.keystore"
+          mkdir -p "$(dirname "${keystore_path}")"
+          printf '%s' "${ANDROID_SIGNING_KEYSTORE_BASE64}" | base64 --decode > "${keystore_path}"
+          echo "ANDROID_SIGNING_KEYSTORE_PATH=${keystore_path}" >> "${GITHUB_ENV}"
+
+      - name: Build signed release AAB
+        env:
+          ANDROID_SIGNING_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEYSTORE_PASSWORD }}
+          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS || vars.ANDROID_SIGNING_KEY_ALIAS }}
+          ANDROID_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+        run: ./gradlew :app:bundleRelease --no-daemon --stacktrace
+
+      - name: Verify release AAB signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          bundles=(app/build/outputs/bundle/release/*.aab)
+          if [ "${#bundles[@]}" -ne 1 ]; then
+            echo "::error::Expected exactly one release AAB, found ${#bundles[@]}."
+            exit 1
+          fi
+
+          verify_output="$(jarsigner -verify -verbose -certs "${bundles[0]}" 2>&1)"
+          printf '%s\n' "${verify_output}"
+
+          if grep -q "jar is unsigned" <<< "${verify_output}"; then
+            echo "::error::Release AAB is unsigned."
+            exit 1
+          fi
+
+          if ! grep -q "jar verified" <<< "${verify_output}"; then
+            echo "::error::Release AAB signature verification did not succeed."
+            exit 1
+          fi
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v7
+        with:
+          name: jetnews-release-aab
+          path: app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
