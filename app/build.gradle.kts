@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020-2025.
+ * Copyright (c) 2020-2026.
  * The Android Open Source Project, valo.media GmbH
  * All rights reserved.
  *
@@ -56,22 +56,48 @@ android {
 
     signingConfigs {
         // Important: change the keystore for a production deployment
+        fun nonBlankEnv(name: String) = System.getenv(name)?.takeIf { it.isNotBlank() }
+
+        val releaseKeystore = nonBlankEnv("ANDROID_SIGNING_KEYSTORE_PATH")?.let(::File)
+        val releaseStorePassword = nonBlankEnv("ANDROID_SIGNING_KEYSTORE_PASSWORD")
+        val releaseKeyAlias = nonBlankEnv("ANDROID_SIGNING_KEY_ALIAS")
+        val releaseKeyPassword = nonBlankEnv("ANDROID_SIGNING_KEY_PASSWORD")
         val userKeystore = File(System.getProperty("user.home"), ".android/debug.keystore")
         val localKeystore = rootProject.file("debug_2.keystore")
         val localStorePassword = System.getenv("compose_store_password")
         val localKeyAlias = System.getenv("compose_key_alias")
         val localKeyPassword = System.getenv("compose_key_password")
+        val hasReleaseKeyInfo = releaseKeystore?.exists() == true &&
+                releaseStorePassword != null &&
+                releaseKeyAlias != null &&
+                releaseKeyPassword != null
         val hasUserKeyInfo = userKeystore.exists()
         val hasLocalKeyInfo = localKeystore.exists() &&
                 localStorePassword != null &&
                 localKeyAlias != null &&
                 localKeyPassword != null
-        if (hasUserKeyInfo || hasLocalKeyInfo) {
+        if (hasReleaseKeyInfo || hasUserKeyInfo || hasLocalKeyInfo) {
             create("release") {
-                storeFile = if (hasUserKeyInfo) userKeystore else localKeystore
-                storePassword = if (hasUserKeyInfo) "android" else localStorePassword
-                keyAlias = if (hasUserKeyInfo) "androiddebugkey" else localKeyAlias
-                keyPassword = if (hasUserKeyInfo) "android" else localKeyPassword
+                when {
+                    hasReleaseKeyInfo -> {
+                        storeFile = releaseKeystore
+                        storePassword = releaseStorePassword
+                        keyAlias = releaseKeyAlias
+                        keyPassword = releaseKeyPassword
+                    }
+                    hasUserKeyInfo -> {
+                        storeFile = userKeystore
+                        storePassword = "android"
+                        keyAlias = "androiddebugkey"
+                        keyPassword = "android"
+                    }
+                    else -> {
+                        storeFile = localKeystore
+                        storePassword = localStorePassword
+                        keyAlias = localKeyAlias
+                        keyPassword = localKeyPassword
+                    }
+                }
             }
         }
     }
