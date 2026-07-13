@@ -83,6 +83,33 @@ jobs:
       - name: Run JVM unit and Robolectric tests
         run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
 
+  lint:
+    name: Android lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 9.2.1
+
+      - name: Generate Gradle wrapper
+        run: gradle wrapper --no-daemon
+
+      - name: Run Android lint
+        run: ./gradlew :app:lintDebug --no-daemon --stacktrace
+
   instrumented-tests:
     name: Instrumented tests
     runs-on: ubuntu-latest
