@@ -15,142 +15,17 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: Build validation
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.2.1
-
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
-
-      - name: Run build validation
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
-
-      - name: Upload debug APK
-        uses: actions/upload-artifact@v7
-        with:
-          name: jetnews-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-
-  unit-tests:
-    name: JVM unit and Robolectric tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.2.1
-
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
-
-      - name: Run JVM unit and Robolectric tests
-        run: ./gradlew :app:testDebugUnitTest --no-daemon --stacktrace
-
-  lint:
-    name: Android lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.2.1
-
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
-
-      - name: Run Android lint
-        run: ./gradlew :app:lintDebug --no-daemon --stacktrace
-
-  instrumented-tests:
-    name: Instrumented tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.2.1
-
-      - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
-
-      - name: Enable KVM
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Run instrumented tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 35
-          arch: x86_64
-          script: >-
-            bash -c 'set +e;
-            adb shell rm -rf /sdcard/Download/jetnews-test-screenshots || true;
-            ./gradlew connectedCheck --no-daemon --stacktrace;
-            test_status=$?;
-            mkdir -p "$GITHUB_WORKSPACE/build/instrumented-test-screenshots";
-            adb pull "/sdcard/Download/jetnews-test-screenshots/." "$GITHUB_WORKSPACE/build/instrumented-test-screenshots" || true;
-            exit "$test_status"'
-
-      - name: Upload instrumented test screenshots
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: instrumented-test-screenshots
-          path: build/instrumented-test-screenshots
-          if-no-files-found: warn
+  ci:
+    uses: valomedia/github-workflows/.github/workflows/android-ci.yml@9cfb78a412ade77e2b903c14ce064485341e63ef
+    with:
+      build-artifact-name: jetnews-debug-apk
+      instrumented-test-command: >-
+        bash -c 'set +e;
+        adb shell rm -rf /sdcard/Download/jetnews-test-screenshots || true;
+        ./gradlew connectedCheck --no-daemon --stacktrace;
+        test_status=$?;
+        mkdir -p "$GITHUB_WORKSPACE/build/instrumented-test-screenshots";
+        adb pull "/sdcard/Download/jetnews-test-screenshots/." "$GITHUB_WORKSPACE/build/instrumented-test-screenshots" || true;
+        exit "$test_status"'
+      instrumented-test-artifact-name: instrumented-test-screenshots
+      instrumented-test-artifact-path: build/instrumented-test-screenshots
