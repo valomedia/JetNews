@@ -23,27 +23,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Resolve pinned Gradle version
-        id: gradle-version
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          properties=gradle/wrapper/gradle-wrapper.properties
-          version="$(sed -nE 's#^distributionUrl=.*/gradle-(.*)-(bin|all)\.zip$#\1#p' "${properties}")"
-          if [ -z "${version}" ]; then
-            echo "::error::Could not read the Gradle version from ${properties}."
-            exit 1
-          fi
-          echo "version=${version}" >> "${GITHUB_OUTPUT}"
-
+      # No gradle-version: the runner's preinstalled Gradle only bootstraps the wrapper, and
+      # gradle/wrapper/gradle-wrapper.properties decides which Gradle the build itself runs on.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: ${{ steps.gradle-version.outputs.version }}
 
+      # The task name must stay qualified. gradle.properties enables configure-on-demand, so an
+      # unqualified `wrapper` makes Gradle configure every project to look for a matching task,
+      # which applies AGP and ties the bootstrap Gradle to AGP's supported range.
       - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
+        run: gradle :wrapper --no-daemon
 
       - name: Decode signing keystore
         shell: bash

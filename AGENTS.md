@@ -26,8 +26,11 @@ The wrapper jar and the `gradlew` scripts are untracked, so an opaque binary nev
 If `gradlew` is missing, create it with any locally installed Gradle:
 
 ```shell
-gradle wrapper
+gradle :wrapper
 ```
+
+Keep the task name qualified.
+`gradle.properties` enables configure-on-demand, so a bare `gradle wrapper` makes Gradle configure every project while searching for a matching task, which applies the Android Gradle Plugin and fails on any Gradle outside AGP's supported range.
 
 Then use the wrapper for project commands:
 
@@ -41,10 +44,11 @@ Then use the wrapper for project commands:
 `./gradlew connectedCheck` requires an Android device or emulator.
 The checked-in Android Studio run configurations mirror these test modes.
 
-`gradle/wrapper/gradle-wrapper.properties` is the single source of truth for the Gradle version, currently `9.2.1`.
+`gradle/wrapper/gradle-wrapper.properties` is the single source of truth for the Gradle version.
 The root `wrapper` task reads the version from that file rather than hard-coding one, so regenerating the wrapper with an older or newer local Gradle re-pins nothing.
 Renovate keeps the file current through its `gradle-wrapper` manager, so change the Gradle version by editing `distributionUrl` there — do not reintroduce a `gradleVersion` literal in `build.gradle.kts`.
 `app:preBuild` depends on `:wrapper`, so builds regenerate the untracked wrapper files as needed.
+Regenerating with a Gradle newer than the pin can add default keys such as `retries` to the properties file; that is harmless, and the pinned `distributionUrl` is left alone.
 Do not commit the wrapper jar or the `gradlew` scripts; `.gitignore` excludes them deliberately.
 
 ## Android and Kotlin conventions
