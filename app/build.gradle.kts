@@ -37,7 +37,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
-    kotlin("plugin.serialization") version "2.0.20"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -201,7 +201,7 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.coil.compose.v270)
+    implementation(libs.coil.compose)
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)
