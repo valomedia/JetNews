@@ -21,8 +21,9 @@ Key entry points:
 
 Run commands from the repository root.
 
-This repository may not have `gradlew` checked in.
-If it is missing, create it with:
+Only `gradle/wrapper/gradle-wrapper.properties` is checked in.
+The wrapper jar and the `gradlew` scripts are untracked, so an opaque binary never enters the repository.
+If `gradlew` is missing, create it with any locally installed Gradle:
 
 ```shell
 gradle wrapper
@@ -40,9 +41,11 @@ Then use the wrapper for project commands:
 `./gradlew connectedCheck` requires an Android device or emulator.
 The checked-in Android Studio run configurations mirror these test modes.
 
-The root `wrapper` task pins Gradle `9.2.1`.
-`app:preBuild` depends on `:wrapper`, so builds can update wrapper files.
-Do not commit newly generated or updated Gradle wrapper files unless the task is about wrapper maintenance.
+`gradle/wrapper/gradle-wrapper.properties` is the single source of truth for the Gradle version, currently `9.2.1`.
+The root `wrapper` task reads the version from that file rather than hard-coding one, so regenerating the wrapper with an older or newer local Gradle re-pins nothing.
+Renovate keeps the file current through its `gradle-wrapper` manager, so change the Gradle version by editing `distributionUrl` there — do not reintroduce a `gradleVersion` literal in `build.gradle.kts`.
+`app:preBuild` depends on `:wrapper`, so builds regenerate the untracked wrapper files as needed.
+Do not commit the wrapper jar or the `gradlew` scripts; `.gitignore` excludes them deliberately.
 
 ## Android and Kotlin conventions
 

@@ -23,10 +23,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Resolve pinned Gradle version
+        id: gradle-version
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          properties=gradle/wrapper/gradle-wrapper.properties
+          version="$(sed -nE 's#^distributionUrl=.*/gradle-(.*)-(bin|all)\.zip$#\1#p' "${properties}")"
+          if [ -z "${version}" ]; then
+            echo "::error::Could not read the Gradle version from ${properties}."
+            exit 1
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: 9.2.1
+          gradle-version: ${{ steps.gradle-version.outputs.version }}
 
       - name: Generate Gradle wrapper
         run: gradle wrapper --no-daemon
