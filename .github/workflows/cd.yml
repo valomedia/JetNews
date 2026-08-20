@@ -23,13 +23,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # No gradle-version: the runner's preinstalled Gradle only bootstraps the wrapper, and
+      # gradle/wrapper/gradle-wrapper.properties decides which Gradle the build itself runs on.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.2.1
 
+      # The task name must stay qualified. gradle.properties enables configure-on-demand, so an
+      # unqualified `wrapper` makes Gradle configure every project to look for a matching task,
+      # which applies AGP and ties the bootstrap Gradle to AGP's supported range.
       - name: Generate Gradle wrapper
-        run: gradle wrapper --no-daemon
+        run: gradle :wrapper --no-daemon
 
       - name: Decode signing keystore
         shell: bash
