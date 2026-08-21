@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   ci:
-    uses: valomedia/github-workflows/.github/workflows/android-ci.yml@9cfb78a412ade77e2b903c14ce064485341e63ef
+    uses: valomedia/github-workflows/.github/workflows/android-ci.yml@f443bdf58a1403c669cfdeb33b1d44356a38254d
     with:
       # Empty gradle-version: the runner's preinstalled Gradle only bootstraps the wrapper, and
       # gradle/wrapper/gradle-wrapper.properties decides which Gradle the build itself runs on.
