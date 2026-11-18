@@ -1,0 +1,28 @@
+{
+  "branches": ["main"],
+  "tagFormat": "v${version}",
+  "plugins": [
+    ["@semantic-release/commit-analyzer", { "preset": "conventionalcommits" }],
+    ["@semantic-release/release-notes-generator", { "preset": "conventionalcommits" }],
+    "./.github/scripts/prepare-release.ts",
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["app/build.gradle.kts"],
+        "message": "chore: bump version and build number"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          "build/release/JetNews-*.zip",
+          "build/release/JetNews-*.tar.gz"
+        ],
+        "successCommentCondition": false,
+        "failCommentCondition": false,
+        "releasedLabels": false
+      }
+    ]
+  ]
+}

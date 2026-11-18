@@ -67,7 +67,8 @@ android {
         val localStorePassword = System.getenv("compose_store_password")
         val localKeyAlias = System.getenv("compose_key_alias")
         val localKeyPassword = System.getenv("compose_key_password")
-        val hasReleaseKeyInfo = releaseKeystore?.exists() == true &&
+        val hasReleaseKeyInfo = releaseKeystore?.isFile == true &&
+                releaseKeystore.length() > 0 &&
                 releaseStorePassword != null &&
                 releaseKeyAlias != null &&
                 releaseKeyPassword != null
@@ -76,6 +77,12 @@ android {
                 localStorePassword != null &&
                 localKeyAlias != null &&
                 localKeyPassword != null
+        // Publishing must never fall back to a local or emulator-created debug key.
+        if (providers.gradleProperty("requireReleaseSigning").orNull == "true") {
+            check(hasReleaseKeyInfo) {
+                "Publishing requires a nonempty release keystore and nonblank ANDROID_SIGNING credentials."
+            }
+        }
         if (hasReleaseKeyInfo || hasUserKeyInfo || hasLocalKeyInfo) {
             create("release") {
                 when {

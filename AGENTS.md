@@ -51,6 +51,33 @@ Renovate keeps the file current through its `gradle-wrapper` manager, so change 
 Regenerating with a Gradle newer than the pin can add default keys such as `retries` to the properties file; that is harmless, and the pinned `distributionUrl` is left alone.
 Do not commit the wrapper jar or the `gradlew` scripts; `.gitignore` excludes them deliberately.
 
+## Release tooling
+
+CD is manually dispatched on `main` and gates the exact input SHA on a successful main-push CI run.
+It reruns instrumented tests independently of CI.
+`.releaserc.json` orders the local preparation plugin before the git and GitHub plugins:
+version update → build/signature checks/archives → version commit → tag/GitHub release.
+Keep the commit message exactly `chore: bump version and build number`.
+The preparation hook must remain responsible for version changes,
+so semantic-release's no-release path never increments the build number.
+The hook must pass `-PrequireReleaseSigning=true` to Gradle:
+instrumented tests can create a debug keystore,
+and publishing must fail rather than use that fallback when release credentials are missing or blank.
+Do not enable strict signing for the earlier instrumented-test build.
+
+Release helpers are native TypeScript in `.github/scripts`,
+run with Node 22's type stripping; no compiled JavaScript is checked in.
+Use `npm ci --include=dev`, `npm test`, and `npm run typecheck` for local verification.
+Tests require Node 22.22.2+, JDK 17 (`jar`, `jarsigner`, `keytool`), Bash, and tar,
+but no Android SDK or GitHub writes.
+`npm run release` is a publishing command, not a validation command.
+
+Release screenshots come from `build/instrumented-test-screenshots`,
+not the checked-in `screenshots/` assets.
+The required screenshot names in the release scripts match `MainActivityInstrumentedTest.kt`;
+update both if a screenshot-producing test is renamed.
+See README's GitHub releases section for signing inputs and partial-publication recovery.
+
 ## Android and Kotlin conventions
 
 The project uses Android Gradle Plugin `8.13.1`, Kotlin `2.2.21`, Java toolchain `17`, and Compose.
