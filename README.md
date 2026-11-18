@@ -30,6 +30,66 @@ is too old to start the current build (for example because you haven't built the
 while), you might get an error about your gradle version being too old. In this case, just re-run
 the first command to get the correct version.
 
+## GitHub releases
+
+Run the **CD** workflow manually on `main` after CI succeeds for that exact commit.
+CD rejects other branches, stale commits, and commits without a successful main-push CI run.
+It reruns instrumented tests on an API 35 emulator and requires fresh screenshots.
+Instrumented tests remain in CI as well.
+
+Configure these existing repository signing inputs before releasing:
+
+- `ANDROID_SIGNING_KEYSTORE_BASE64` (secret)
+- `ANDROID_SIGNING_KEYSTORE_PASSWORD` (secret)
+- `ANDROID_SIGNING_KEY_ALIAS` (secret or repository variable)
+- `ANDROID_SIGNING_KEY_PASSWORD` (secret)
+
+Publishing rejects missing or whitespace-only signing inputs and requires a nonempty keystore.
+The preparation plugin passes `-PrequireReleaseSigning=true` to Gradle,
+which disables the local/debug signing fallbacks for that build.
+Ordinary local builds and instrumented tests retain their existing signing behavior.
+
+CD uses `GITHUB_TOKEN` with `actions: read` and `contents: write`.
+Repository rules must allow that identity to push the version commit and release tag.
+Releases are serialized; they do not cancel a release already in progress.
+
+`semantic-release` uses Conventional Commits on `main` to select the next version
+(`fix` → patch, `feat` → minor, breaking changes → major; first release → `1.0.0`).
+Both version analysis and release notes recognize breaking headers such as `feat!:` or `feat(api)!:`,
+and `BREAKING CHANGE:` or `BREAKING-CHANGE:` footers.
+If no release is warranted, it creates no version commit, tag, or release archives.
+For a release, the preparation plugin updates `versionName` in `app/build.gradle.kts`,
+increments `versionCode`, builds both variants, and verifies the signed AAB.
+Only then does the git plugin commit those version changes with the exact message
+`chore: bump version and build number`.
+The `v<version>` tag points to that generated commit.
+The CI gate applies to the input commit; CD builds its version-only derivative.
+
+Each GitHub release includes `JetNews-<version>.zip` and `JetNews-<version>.tar.gz`,
+with identical contents: the signed release AAB, debug APK, and three fresh instrumented-test screenshots
+under `screenshots/`.
+The same archives are retained as the `jetnews-release` workflow artifact.
+No npm package is published, and the release tooling does not comment on issues or PRs.
+
+If publication fails after the version commit or tag has been pushed,
+inspect the existing tag/release and recover its assets from the workflow artifact.
+Complete that release rather than deleting its tag or incrementing the build number again.
+Commits pushed with `GITHUB_TOKEN` do not trigger CI automatically;
+a repeated CD dispatch still needs a green CI run for its selected commit.
+
+To verify release tooling locally without an Android SDK or GitHub writes,
+use Node.js 22.22.2 or newer within Node 22, JDK 17, Bash, and tar:
+
+```shell
+npm ci --include=dev
+npm test
+npm run typecheck
+```
+
+Tests mock Android builds and GitHub API responses,
+but exercise real JAR signing checks and extraction of both archive formats.
+Do not run `npm run release` locally for validation; it can push and publish.
+
 ## Sample Contents
 
 <img src="screenshots/screenshots.png" alt="Screenshot">
