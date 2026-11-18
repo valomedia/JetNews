@@ -1,4 +1,32 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>valomedia/renovate-config"]
+  "extends": ["github>valomedia/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update compileSdk and targetSdk together without changing minSdk.",
+      "managerFilePatterns": ["/^app/build\\.gradle\\.kts$/"],
+      "matchStrings": [
+        "(?:^|\\n)[ \\t]*(?:compileSdk|targetSdk)[ \\t]*=[ \\t]*(?<currentValue>\\d+)\\b"
+      ],
+      "depNameTemplate": "android-sdk",
+      "datasourceTemplate": "custom.android-api",
+      "versioningTemplate": "regex:^(?<major>\\d+)$"
+    }
+  ],
+  "customDatasources": {
+    "android-api": {
+      "defaultRegistryUrlTemplate": "https://endoflife.date/api/v1/products/android/",
+      "transformTemplates": [
+        "{\"releases\": [result.releases.{\"version\": custom.apiVersion}]}"
+      ]
+    }
+  },
+  "packageRules": [
+    {
+      "description": "Review Android SDK compatibility and target-SDK behavior changes before merging.",
+      "matchDatasources": ["custom.android-api"],
+      "automerge": false
+    }
+  ]
 }
